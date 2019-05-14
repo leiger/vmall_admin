@@ -30,7 +30,7 @@ const codeMessage = {
 const errorHandler = error => {
   const { response = {} } = error;
   const errortext = codeMessage[response.status] || response.statusText;
-  const { status, url } = response;
+  const { status } = response;
 
   if (status === 401) {
     notification.error({
@@ -44,7 +44,7 @@ const errorHandler = error => {
     return;
   }
   notification.error({
-    message: `请求错误 ${status}: ${url}`,
+    message: `Bad Request ${status}`,
     description: errortext,
   });
   // environment should not be used

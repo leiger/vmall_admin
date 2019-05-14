@@ -10,13 +10,13 @@ const FooterView = () => (
         {
           key: 'vmall2',
           title: 'vmall2',
-          href: 'https://pro.ant.design',
+          href: 'https://vmall.leiger.tech',
           blankTarget: true,
         },
         {
           key: 'github',
           title: <Icon type="github" />,
-          href: 'https://github.com/ant-design/ant-design-pro',
+          href: 'https://github.com/leiger/vmall_admin',
           blankTarget: true,
         }
       ]}

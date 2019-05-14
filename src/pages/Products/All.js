@@ -32,9 +32,9 @@ const RadioGroup = Radio.Group;
 const SelectOption = Select.Option;
 const { Search, TextArea } = Input;
 
-@connect(({ list, loading }) => ({
-  list,
-  loading: loading.models.list,
+@connect(({ products, loading }) => ({
+  products,
+  loading: loading.models.products,
 }))
 @Form.create()
 class BasicList extends PureComponent {
@@ -48,7 +48,7 @@ class BasicList extends PureComponent {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'list/fetch',
+      type: 'products/fetch',
       payload: {
         count: 5,
       },
@@ -97,7 +97,7 @@ class BasicList extends PureComponent {
         done: true,
       });
       dispatch({
-        type: 'list/submit',
+        type: 'products/submit',
         payload: { id, ...fieldsValue },
       });
     });
@@ -106,14 +106,14 @@ class BasicList extends PureComponent {
   deleteItem = id => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'list/submit',
+      type: 'products/submit',
       payload: { id },
     });
   };
 
   render() {
     const {
-      list: { list },
+      products: { products },
       loading,
     } = this.props;
     const {
@@ -295,7 +295,7 @@ class BasicList extends PureComponent {
               rowKey="id"
               loading={loading}
               pagination={paginationProps}
-              dataSource={list}
+              dataSource={products}
               renderItem={item => (
                 <List.Item
                   actions={[

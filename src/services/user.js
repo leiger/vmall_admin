@@ -5,5 +5,12 @@ export async function query() {
 }
 
 export async function queryCurrent() {
-  return request('/api/currentUser');
+  return request(`/api/admins`);
+}
+
+export async function accountLogin(params) {
+  return request('/api/admins', {
+    method: 'POST',
+    data: params,
+  });
 }
