@@ -7,3 +7,10 @@ export async function getAllProducts() {
 export async function queryCurrent() {
   return request('/api/currentUser');
 }
+
+export async function putNewProduct(params) {
+  return request('/api/products', {
+    method: 'POST',
+    data: params,
+  });
+}

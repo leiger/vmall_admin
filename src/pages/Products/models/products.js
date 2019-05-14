@@ -1,6 +1,6 @@
 import { routerRedux } from 'dva/router';
-import { message } from 'antd';
-import { getAllProducts } from '@/services/product';
+// import { message } from 'antd';
+import { getAllProducts, putNewProduct } from '@/services/product';
 
 export default {
   namespace: 'products',
@@ -12,16 +12,18 @@ export default {
     //   receiverName: 'Alex',
     //   amount: '500',
     // },
-    product: {
-      category: '',
+    allProducts: [],
+    newProduct: {
+      categoryId: '',
       name: '',
-      oldPrice: '',
+      oldPrice: 0,
       newPrice: '',
-      promote: false,
+      promote: '',
       images:[],
       numInStock: 0,
       desc: []
-    }
+    },
+    submit: ''
   },
 
   effects: {
@@ -30,7 +32,8 @@ export default {
     //   message.success('提交成功');
     // },
     *submitStepForm({ payload }, { call, put }) {
-      yield call(fakeSubmitForm, payload);
+      yield call(putNewProduct, payload);
+      // console.log(response);
       yield put({
         type: 'saveStepFormData',
         payload,
@@ -52,21 +55,34 @@ export default {
 
   reducers: {
     saveStepFormData(state, { payload }) {
+      console.log(payload);
       return {
         ...state,
-        step: {
-          ...state.step,
+        newProduct: {
+          ...state.newProduct,
           ...payload,
         },
       };
     },
+    saveImageAddress(state, {payload}) {
+      console.log(payload);
+      return {
+        ...state,
+        newProduct: {
+          ...state.newProduct,
+          images: [
+            ...state.newProduct.images,
+            payload
+          ]
+        }
+      }
+    },
     queryProducts(state, {payload}) {
       return {
         ...state,
-        product: {
-          ...state.product,
+        allProducts: [
           ...payload,
-        },
+        ],
       };
     }
   },

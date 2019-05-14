@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
 import Link from 'umi/link';
-import { Checkbox, Alert } from 'antd';
+import { Alert } from 'antd';
 import { formatMessage, FormattedMessage } from 'umi-plugin-react/locale';
 import Login from '@/components/Login';
 import styles from './Login.less';

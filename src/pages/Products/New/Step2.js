@@ -4,52 +4,49 @@ import { Form, Button, Alert, Divider, Upload, Icon } from 'antd';
 import router from 'umi/router';
 import styles from './style.less';
 
-@connect(({ form, loading }) => ({
-  submitting: loading.effects['form/submitStepForm'],
-  data: form.step,
+@connect(({ products, loading }) => ({
+  submitting: loading.effects['products/submitStepForm'],
+  data: products.newProduct,
 }))
 @Form.create()
 class Step2 extends React.PureComponent {
 
   render() {
     const { form, data, dispatch, submitting } = this.props;
-    const { validateFields } = form;
     const onPrev = () => {
       router.push('/products/new/info');
     };
-    const onValidateForm = e => {
+    const submitForm = e => {
       e.preventDefault();
-      validateFields((err, values) => {
-        if (!err) {
-          dispatch({
-            type: 'form/submitStepForm',
-            payload: {
-              ...data,
-              ...values,
-            },
-          });
-        }
+      dispatch({
+        type: 'products/submitStepForm',
+        payload: {
+          ...data
+        },
       });
     };
-    const fileList = [{
-      uid: '-1',
-      name: 'xxx.png',
-      status: 'done',
-      url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      thumbUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-    }, {
-      uid: '-2',
-      name: 'yyy.png',
-      status: 'done',
-      url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      thumbUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-    }];
+    const defaultFileList = [];
+    data.images.forEach((img, index) => {
+      defaultFileList.push({
+        url: `http://localhost:3000/images/products/${img}`,
+        uid: index,
+        status: 'done'
+      });
+    })
 
     const props = {
-      action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+      action: 'http://localhost:3000/api/images',
       listType: 'picture',
-      defaultFileList: [...fileList],
-      className: 'upload-list-inline'
+      className: 'upload-list-inline',
+      defaultFileList,
+      onChange: ({ file }) => {
+        if (file.status === 'done' && file.response !== undefined) {
+          dispatch({
+            type: 'products/saveImageAddress',
+            payload: file.response
+          });
+        }
+      }
     };
 
     return (
@@ -60,7 +57,7 @@ class Step2 extends React.PureComponent {
           message="No more than 3 Images"
           style={{ marginBottom: 24 }}
         />
-
+        <span>{data.promote}</span>
         <Upload {...props}>
           <Button>
             <Icon type="upload" /> Upload
@@ -72,7 +69,7 @@ class Step2 extends React.PureComponent {
           <Button onClick={onPrev}>
             Last Step
           </Button>
-          <Button type="primary" style={{ marginLeft: 8 }} onClick={onValidateForm} loading={submitting}>
+          <Button type="primary" style={{ marginLeft: 8 }} onClick={submitForm} loading={submitting}>
             Submit
           </Button>
         </Form.Item>

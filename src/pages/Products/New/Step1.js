@@ -17,20 +17,32 @@ const FormItem = Form.Item;
 const { Option } = Select;
 const { TextArea } = Input;
 
-@connect(({ form }) => ({
-  data: form.product,
+@connect(({ category, products }) => ({
+  category,
+  data: products.newProduct
 }))
 @Form.create()
 class Step1 extends React.PureComponent {
+  componentDidMount() {
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'category/fetch',
+    });
+  }
 
   render() {
-    const { form, dispatch } = this.props;
+    const { data, dispatch, category, form } = this.props;
+    const { allCategories } = category;
+    const options = allCategories.map(value =>
+      // eslint-disable-next-line no-underscore-dangle
+      <Option key={value._id} value={value._id}>{value.name}</Option>
+    )
     const { getFieldDecorator, validateFields } = form;
     const onValidateForm = () => {
       validateFields((err, values) => {
         if (!err) {
           dispatch({
-            type: 'form/saveStepFormData',
+            type: 'products/saveStepFormData',
             payload: values,
           });
           router.push('/products/new/images');
@@ -54,6 +66,7 @@ class Step1 extends React.PureComponent {
         <Form layout="horizontal" className={styles.stepForm} style={{ marginTop: 30, maxWidth: 1000 }}>
           <FormItem {...formItemLayout} label="Product Name">
             {getFieldDecorator('name', {
+              initialValue: data.name,
               rules: [
                 {
                   required: true,
@@ -63,29 +76,33 @@ class Step1 extends React.PureComponent {
             })(<Input placeholder="2-50 characters" />)}
           </FormItem>
           <FormItem {...formItemLayout} label="Category">
-            {getFieldDecorator('category', {
+            {getFieldDecorator('categoryId', {
               rules: [{ required: true }],
             })(
               <Select placeholder="Choose a Category">
-                <Option value="1">1</Option>
-                <Option value="2">2</Option>
-                <Option value="3">3</Option>
+                {options}
               </Select>
             )}
           </FormItem>
           <FormItem {...formItemLayout} label="Price Before Discount">
-            {getFieldDecorator('oldPrice')(<InputNumber min={0} />)}
+            {getFieldDecorator('oldPrice',{
+              initialValue: data.oldPrice
+            })(<InputNumber min={0} />)}
           </FormItem>
           <FormItem {...formItemLayout} label="Price">
             {getFieldDecorator('newPrice', {
+              initialValue: data.newPrice,
               rules: [{ required: true, message: 'Please enter a price' }],
             })(<InputNumber min={0} />)}
           </FormItem>
           <FormItem {...formItemLayout} label="Promote">
-            {getFieldDecorator('promote')(<Switch />)}
+            {getFieldDecorator('promote',{
+              valuePropName: 'checked'
+            })(<Switch />)}
           </FormItem>
           <FormItem {...formItemLayout} label="Num In Stock">
             {getFieldDecorator('numInStock', {
+              initialValue: data.numInStock,
               rules: [{ required: true, message: 'Please enter a num' }],
             })(<InputNumber min={0} />)}
           </FormItem>
